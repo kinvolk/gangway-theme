@@ -43,14 +43,14 @@ kubectl config set-cluster {{ .ClusterName }} \
   --server={{ .APIServerURL }} \
   --embed-certs=true \
   --certificate-authority=/tmp/ca-{{ .ClusterName }}.pem
-kubectl config set-credentials {{ .Email }}  \
+kubectl config set-credentials {{ .ClusterName }}-{{ .Email }}  \
   --auth-provider=oidc  \
   --auth-provider-arg=idp-issuer-url={{ .IssuerURL }}  \
   --auth-provider-arg=client-id={{ .ClientID }}  \
   --auth-provider-arg=client-secret={{ .ClientSecret }} \
   --auth-provider-arg=refresh-token={{ .RefreshToken }} \
   --auth-provider-arg=id-token={{ .IDToken }}
-kubectl config set-context {{ .ClusterName }} --cluster={{ .ClusterName }} --user={{ .Email }}
+kubectl config set-context {{ .ClusterName }} --cluster={{ .ClusterName }} --user={{ .ClusterName }}-{{ .Email }}
 kubectl config use-context {{ .ClusterName }}
     </code></pre>
     <p>Lokomotive Kubernetes by <a href="https://kinvolk.io">Kinvolk</a>. Built with <a href="https://github.com/heptiolabs/gangway">Gangway</a>, Apache-2.0</p>
