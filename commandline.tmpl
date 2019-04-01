@@ -1,0 +1,60 @@
+<!doctype html>
+<!--
+vi: ft=html
+-->
+<html lang="en-us">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Lokomotive Kubernetes Gangway</title>
+
+  <link href="https://fonts.googleapis.com/css?family=Overpass" rel="stylesheet">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+<style>
+body {
+  background: #ffc107;
+  font-family: 'Overpass', sans-serif;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+h1, h2, h3, h4 {
+  font-weight: normal;
+}
+</style>
+
+</head>
+<body>
+
+  <div class="container">
+    <h1 class="display-4">Lokomotive Kubernetes Gangway</h1>
+    <p>Welcome {{ .Username }}.</p>
+    <p>In order to get command-line access to the {{ .ClusterName }} Kubernetes cluster, you will need to configure OpenID Connect (OIDC) authenication for your client.</p>
+    <p>The Kubernetes command-line utility, kubectl, may be installed like so:</p>
+    <pre><code>
+curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/$(uname | awk '{print tolower($0)}')/amd64/kubectl
+chmod +x ./kubectl
+sudo mv ./kubectl /usr/local/bin/kubectl
+    </code></pre>
+    <p>Once kubectl is installed, you may execute the following:</p>
+    <pre><code>
+echo "{{ .ClusterCA }}" \ &gt; /tmp/ca-{{ .ClusterName }}.pem
+kubectl config set-cluster {{ .ClusterName }} \
+  --server={{ .APIServerURL }} \
+  --embed-certs=true \
+  --certificate-authority=/tmp/ca-{{ .ClusterName }}.pem
+kubectl config set-credentials {{ .Email }}  \
+  --auth-provider=oidc  \
+  --auth-provider-arg=idp-issuer-url={{ .IssuerURL }}  \
+  --auth-provider-arg=client-id={{ .ClientID }}  \
+  --auth-provider-arg=client-secret={{ .ClientSecret }} \
+  --auth-provider-arg=refresh-token={{ .RefreshToken }} \
+  --auth-provider-arg=id-token={{ .IDToken }}
+kubectl config set-context {{ .ClusterName }} --cluster={{ .ClusterName }} --user={{ .Email }}
+kubectl config use-context {{ .ClusterName }}
+    </code></pre>
+    <p>Lokomotive Kubernetes by <a href="https://kinvolk.io">Kinvolk</a>. Built with <a href="https://github.com/heptiolabs/gangway">Gangway</a>, Apache-2.0</p>
+  </div>
+
+</body>
+</html>
