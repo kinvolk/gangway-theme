@@ -41,7 +41,7 @@ sudo mv ./kubectl /usr/local/bin/kubectl
 echo "{{ .ClusterCA }}" \ &gt; /tmp/ca-{{ .ClusterName }}.pem
 kubectl config set-cluster {{ .ClusterName }} \
   --server={{ .APIServerURL }} \
-  --embed-certs=true \
+  --embed-certs \
   --certificate-authority=/tmp/ca-{{ .ClusterName }}.pem
 kubectl config set-credentials {{ .KubeCfgUser }}  \
   --auth-provider=oidc  \
@@ -50,8 +50,9 @@ kubectl config set-credentials {{ .KubeCfgUser }}  \
   --auth-provider-arg=client-secret={{ .ClientSecret }} \
   --auth-provider-arg=refresh-token={{ .RefreshToken }} \
   --auth-provider-arg=id-token={{ .IDToken }}
-kubectl config set-context {{ .ClusterName }} --cluster={{ .ClusterName }} --user={{ .ClusterName }}-{{ .KubeCfgUser }}
+kubectl config set-context {{ .ClusterName }} --cluster={{ .ClusterName }} --user={{ .KubeCfgUser }}
 kubectl config use-context {{ .ClusterName }}
+rm /tmp/ca-{{ .ClusterName }}.pem
     </code></pre>
     <p>Lokomotive Kubernetes by <a href="https://kinvolk.io">Kinvolk</a>. Built with <a href="https://github.com/heptiolabs/gangway">Gangway</a>, Apache-2.0</p>
   </div>
