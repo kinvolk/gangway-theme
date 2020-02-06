@@ -5,7 +5,7 @@ look like:
 ```
       initContainers:
       - name: download-theme
-        image: schu/alpine-git
+        image: alpine/git:1.0.7
         command:
          - git
          - clone
